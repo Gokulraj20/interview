@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  labels:
-    app: backend
 spec:
   replicas: 1
   selector:
@@ -15,11 +13,33 @@ spec:
         app: backend
     spec:
       containers:
-        - name: go-app
+        - name: backend
           image: goapp:latest
           ports:
-            - containerPort: 8000
-            
+            - containerPort: 8080
           env:
-            - name: DATABASE_URL
-              value: 
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: password
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: port
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: name
